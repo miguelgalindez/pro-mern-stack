@@ -30,7 +30,7 @@ class IssueRow extends React.Component {
             React.createElement(
                 'td',
                 null,
-                issue.id
+                issue._id
             ),
             React.createElement(
                 'td',
@@ -70,7 +70,7 @@ class IssueTable extends React.Component {
     render() {
         const borderedStyle = { border: "1px solid silver", padding: 6 };
         const issuesRows = this.props.issues.map(function (issue) {
-            return React.createElement(IssueRow, { key: issue.id, issue: issue });
+            return React.createElement(IssueRow, { key: issue._id, issue: issue });
         });
         return React.createElement(
             'table',
@@ -192,15 +192,23 @@ class IssueList extends React.Component {
         }, 500);
         */
 
-        fetch('/api/issues').then(response => response.json()).then(data => {
-            console.log("Total count of records: " + data._metadata.total_count);
-            data.records.forEach(issue => {
-                issue.created = new Date(issue.created);
-                if (issue.completionDate) issue.completionDate = new Date(issue.completionDate);
-            });
-            this.setState({ issues: data.records });
+        fetch('/api/issues').then(response => {
+            if (response.ok) {
+                response.json().then(data => {
+                    console.log("Total acount of records ", data._metadata.total_count);
+                    data.records.forEach(issue => {
+                        issue.created = new Data();
+                        issue.completionDate = issue.completionDate ? new Date(issue.completionDate) : null;
+                    });
+                    this.setState(data.records);
+                });
+            } else {
+                response.json().then(err => {
+                    alert("Failed to fetch issues: " + err.message);
+                });
+            }
         }).catch(err => {
-            console.log(err);
+            alert("Error in fetching data from server:", err);
         });
     }
 

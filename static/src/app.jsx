@@ -27,7 +27,7 @@ class IssueRow extends React.Component{
         const issue=this.props.issue;
         return (
             <tr>
-                <td>{issue.id}</td>
+                <td>{issue._id}</td>
                 <td>{issue.status}</td>
                 <td>{issue.owner}</td>
                 <td>{issue.created.toDateString()}</td>
@@ -43,7 +43,7 @@ class IssueTable extends React.Component{
     render(){
         const borderedStyle={border: "1px solid silver", padding: 6};
         const issuesRows=this.props.issues.map(function(issue){
-            return <IssueRow key={issue.id} issue={issue} />;
+            return <IssueRow key={issue._id} issue={issue} />;
         });
         return (
             <table className="bordered-table">
@@ -124,17 +124,24 @@ class IssueList extends React.Component{
         */
 
         fetch('/api/issues')
-            .then(response => response.json())
-            .then(data => {
-                console.log("Total count of records: "+ data._metadata.total_count);
-                data.records.forEach(issue => {
-                    issue.created=new Date(issue.created);
-                    if(issue.completionDate)
-                        issue.completionDate=new Date(issue.completionDate);
-                });
-                this.setState({issues: data.records});
+            .then(response => {
+                if(response.ok){
+                    response.json().then(data =>{
+                        console.log("Total acount of records ",data._metadata.total_count);
+                        data.records.forEach(issue => {
+                            issue.created=new Data();                            
+                            issue.completionDate=issue.completionDate ? new Date(issue.completionDate) : null;
+                        });
+                        this.setState(data.records);
+                    });
+                }
+                else{
+                    response.json().then(err => {
+                        alert("Failed to fetch issues: "+err.message);
+                    });
+                }                        
             }).catch(err => {
-                console.log(err);
+                alert("Error in fetching data from server:", err);
             });
     }
 

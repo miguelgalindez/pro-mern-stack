@@ -11,8 +11,10 @@
   "author": "Miguel Galindez",
   "license": "ISC",
   "dependencies": {
+    "async": "^2.6.0",
     "body-parser": "^1.18.2",
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "mongodb": "^3.0.7"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
